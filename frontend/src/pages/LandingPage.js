@@ -38,7 +38,7 @@ function LandingPage() {
   return (
     <div className="landing-page">
       <div className="landing-content">
-        <h1>Welcome to the Health Data Marketplace</h1>
+        <h1>Welcome to SAOIRSE</h1>
         <button onClick={connectWallet} disabled={walletConnected} className="connect-wallet-btn">
           {walletConnected 
             ? `Wallet Connected: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}` 

@@ -10,11 +10,11 @@ Saoirse is a decentralized privacy-first platform for monetizing your health dat
 
 ### Seller
 
-a bit about seller
+Sellers join the platform to securely monetise sensitive information. There are also community elements that allow private peer-to-peer connections on issues that are often stigmatised. 
 
 ### Buyer
 
-a bit about buyter
+Buyers include healthcare insitutions, resaerch DAOs and other entities. These organisations can access large pools of data after purchasing a decryption key.
 
 ## Flow
 
