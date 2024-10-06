@@ -31,4 +31,6 @@ Buyers include healthcare insitutions, resaerch DAOs and other entities. These o
 - Noir for generating email proofs (not sure if possible wtih ZKPass)
 - Solidity smart contracts for marketplace and verifiers
 
+## ZKPass schemas
 
+Check [here](./zkpass/README.md) for schema documentation.
