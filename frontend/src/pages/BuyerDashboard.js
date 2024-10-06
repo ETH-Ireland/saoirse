@@ -88,13 +88,10 @@ function BuyerDashboard() {
               <button onClick={downloadCSV}>Download CSV</button>
 
               <section className="trends-section">
-                <h3>Unlocked Trends</h3>
-                <p>Here are some mock health data trends:</p>
-                <ul>
-                  <li>Cardiac Health: 20% improvement over the last 5 years</li>
-                  <li>Sleep Disorders: 15% increase in diagnoses</li>
-                  <li>Sexual Health: 10% improvement in reported satisfaction rates</li>
-                </ul>
+                <h3>Sneak peak</h3>
+                Cardiac Health: 17% decrease over the last 5 years in USA<br/>
+                  Sleep Disorders: 15% increase in diagnoses in Italy<br/>
+                  Sexual Health: 10% improvement in reported satisfaction rates in Europe<br/>
               </section>
             </section>
           )}

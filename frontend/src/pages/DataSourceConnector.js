@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import { Noir } from '@noir-lang/noir_js';
-import emailCircuit from '../../../circuits/email_sexual_health/target/partial_hash.json' with { type: 'json' };
+import emailCircuit from '../assets/partial_hash.json';
 
 const connectEmailWithNoir = async () => {
   try {
