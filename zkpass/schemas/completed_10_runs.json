@@ -1,0 +1,38 @@
+{
+  "issuer": "Strava",
+  "desc": "Strava connects millions of runners, cyclists, hikers, walkers and other active people through the sports they love",
+  "website": "https://www.strava.com/athlete/training",
+  "APIs": [
+    {
+      "host": "www.strava.com",
+      "intercept": {
+        "url": "athlete/training_activities",
+        "method": "GET"
+      },
+      "override": {
+        "url": "api/v3/athlete/activities"
+      },
+      "assert": [
+        {
+          "key": "filter|type,Run|length",
+          "value": "10",
+          "operation": ">="
+        },
+        {
+          "key": "filter|type,Run|sum|distance",
+          "value": "50000",
+          "operation": ">="
+        }
+      ]
+    }
+  ],
+  "HRCondition": [
+    "Completed at least 10 runs",
+    "Total running distance of at least 50km"
+  ],
+  "tips": {
+    "message": "After logging in to Strava, navigate to your Training Log page and click 'Start' to begin the verification process."
+  },
+  "category": "Healthcare",
+  "id": "0x9d023efa242145e196f318d801bbbe87"
+}

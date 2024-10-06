@@ -1,0 +1,32 @@
+{
+  "issuer": "Strava",
+  "desc": "Strava connects millions of runners, cyclists, hikers, walkers and other active people through the sports they love",
+  "website": "https://www.strava.com/athlete/training",
+  "APIs": [
+    {
+      "host": "www.strava.com",
+      "intercept": {
+        "url": "athlete/training_activities",
+        "method": "GET"
+      },
+      "override": {
+        "url": "api/v3/athlete/activities"
+      },
+      "assert": [
+        {
+          "key": "filter|type,Run&distance,>=,5000&moving_time,<=,1800|length",
+          "value": "1",
+          "operation": ">="
+        }
+      ]
+    }
+  ],
+  "HRCondition": [
+    "Completed at least one 5k run in under 30 minutes"
+  ],
+  "tips": {
+    "message": "After logging in to Strava, navigate to your Training Log page and click 'Start' to begin the verification process. Make sure you have at least one 5k run completed in under 30 minutes."
+  },
+  "category": "Healthcare",
+  "id": "0x283e67e7cc94442b800fd104990e7a1e"
+}

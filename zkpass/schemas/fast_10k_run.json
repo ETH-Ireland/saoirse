@@ -1,0 +1,32 @@
+{
+  "issuer": "Strava",
+  "desc": "Strava connects millions of runners, cyclists, hikers, walkers and other active people through the sports they love",
+  "website": "https://www.strava.com/athlete/training",
+  "APIs": [
+    {
+      "host": "www.strava.com",
+      "intercept": {
+        "url": "athlete/training_activities",
+        "method": "GET"
+      },
+      "override": {
+        "url": "api/v3/athlete/activities"
+      },
+      "assert": [
+        {
+          "key": "filter|type,Run&distance,>=,10000&moving_time,<=,4200|length",
+          "value": "1",
+          "operation": ">="
+        }
+      ]
+    }
+  ],
+  "HRCondition": [
+    "Completed at least one 10k run in under 70 minutes"
+  ],
+  "tips": {
+    "message": "After logging in to Strava, navigate to your Training Log page and click 'Start' to begin the verification process. Make sure you have at least one 10k run completed in under 70 minutes."
+  },
+  "category": "Healthcare",
+  "id": "0xb51520c52da1429cb397e083e493ffb6"
+}
