@@ -1,0 +1,6 @@
+[package]
+name = "partial_hash"
+type = "bin"
+compiler_version = ">=0.33.0"
+
+[dependencies]

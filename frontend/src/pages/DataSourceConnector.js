@@ -5,6 +5,36 @@ import Web3 from 'web3';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
 import CryptoJS from 'crypto-js';
 import Sidebar from '../components/Sidebar/Sidebar';
+import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
+import { Noir } from '@noir-lang/noir_js';
+import emailCircuit from '../../../circuits/email_sexual_health/target/partial_hash.json' with { type: 'json' };
+
+const connectEmailWithNoir = async () => {
+  try {
+    console.log('Initializing Noir circuit for email...');
+    
+    const backend = new BarretenbergBackend(emailCircuit, { threads: 8 });
+    const noir = new Noir(emailCircuit);
+
+    const emailInput = { email: 'info@alegriamed.com' };
+    
+    console.log('Generating witness for email verification...');
+    const { witness } = await noir.execute(emailInput);
+
+    console.log('Generating proof for email...');
+    const { proof, publicInputs } = await backend.generateProof(witness);
+
+    console.log('Verifying proof...');
+    const isVerified = await backend.verifyProof({ proof, publicInputs });
+
+    console.log('Proof verified:', isVerified);
+    return isVerified;
+  } catch (error) {
+    console.error('Error in Noir email verification process:', error);
+    throw error;
+  }
+};
+
 
 const ipfs = ipfsHttpClient({
   host: 'ipfs.infura.io',
@@ -53,7 +83,7 @@ function DataSourceConnector() {
   const dataSources = [
     { id: 'ssn', name: 'Italian Healthcare System (SSN)', implemented: false },
     { id: 'strava', name: 'Strava', implemented: true },
-    { id: 'email', name: 'Email', implemented: false },
+    { id: 'email', name: 'Email', implemented: true },  // Email is enabled
     { id: 'appstore', name: 'App Store Downloads', implemented: false },
     { id: 'sms', name: 'SMS', implemented: false },
     { id: 'applehealth', name: 'Apple Health', implemented: true },
@@ -102,7 +132,6 @@ function DataSourceConnector() {
         navigate('/seller-dashboard');
       } catch (error) {
         console.error('Error connecting Strava:', error);
-        // alert('Failed to connect Strava. Please try again.');
       }
     } else if (selectedSource === 'applehealth' && jsonFile) {
       console.log('Uploaded JSON data:', jsonData);
@@ -112,6 +141,17 @@ function DataSourceConnector() {
         alert('Apple Health JSON uploaded successfully!');
         navigate('/seller-dashboard');
       }, 2000); 
+    } 
+    else if (selectedSource === 'email') {  // Email connection logic
+      try {
+        const proofResult = await connectEmailWithNoir();
+        if (proofResult) {
+          alert('Email verified with Noir proof!');
+          navigate('/seller-dashboard');
+        }
+      } catch (error) {
+        console.error('Error verifying email with Noir:', error);
+      }
     } else {
       alert(`Connecting to ${selectedSource} is not implemented yet.`);
     }

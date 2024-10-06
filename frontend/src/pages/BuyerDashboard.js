@@ -1,144 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { ethers } from 'ethers';
-import Sidebar from '../components/Sidebar/Sidebar';
-import StepProgressBar from '../components/StepProcessBar/StepProgressBar';
+import React, { useState } from 'react';
 
 function BuyerDashboard() {
-  const [availableDatasets, setAvailableDatasets] = useState([]);
-  const [purchaseHistory, setPurchaseHistory] = useState([]);
-  const [researchImpact, setResearchImpact] = useState({});
-  const [wallet, setWallet] = useState(null);
-  const [error, setError] = useState(null);
+  const [hasPurchased, setHasPurchased] = useState(false); // Tracks if the user has purchased
+  const [showKeyInput, setShowKeyInput] = useState(false); // Tracks if "I have a key" is clicked
+  const [inputKey, setInputKey] = useState(''); // The key input field value
+  const [isKeyValid, setIsKeyValid] = useState(false); // Tracks if the key is valid
+  const [loading, setLoading] = useState(false); // Loading state for submitting key
 
-  useEffect(() => {
-    connectWallet();
-    fetchAvailableDatasets();
-    fetchPurchaseHistory();
-    fetchResearchImpact();
-  }, []);
+  // Mock CSV Data
+  const mockCSVData = `name,age,condition\nJohn Doe,45,Cardiac\nJane Smith,38,Sleep Disorder\nAlice Johnson,50,Sexual Health`;
 
-  const connectWallet = async () => {
-    try {
-      if (window.ethereum) {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        setWallet(signer);
+  // Hardcoded valid key
+  const VALID_KEY = '12345-SECRET-KEY';
+
+  // Simulates purchasing a dataset and providing a key
+  const purchaseDataset = async () => {
+    alert('Dataset purchased! Your key is: ' + VALID_KEY);
+    setHasPurchased(true); // Set flag to show they have purchased
+  };
+
+  // Handle input key change
+  const handleKeyInput = (e) => {
+    setInputKey(e.target.value);
+  };
+
+  // Simulate key validation
+  const handleSubmitKey = () => {
+    setLoading(true); // Simulate loading
+    setTimeout(() => {
+      if (inputKey === VALID_KEY) {
+        setIsKeyValid(true);
+        alert('Key is valid! You can now download the CSV file and view trends.');
       } else {
-        setError('Please install MetaMask to use this feature');
+        alert('Invalid key. Please try again.');
       }
-    } catch (err) {
-      setError('Failed to connect wallet: ' + err.message);
-    }
+      setLoading(false);
+    }, 2000); // Simulate delay for key verification
   };
 
-  const fetchAvailableDatasets = async () => {
-    setAvailableDatasets([
-      { id: 1, name: 'Health Data Set 1', price: '0.1 ETH', category: 'Cardiac Health' },
-      { id: 2, name: 'Health Data Set 2', price: '0.2 ETH', category: 'Activity & Sleep' },
-      { id: 3, name: 'Health Data Set 3', price: '0.15 ETH', category: 'Sexual Health' },
-    ]);
+  // CSV download function
+  const downloadCSV = () => {
+    const blob = new Blob([mockCSVData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'health_data.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
-
-  const fetchPurchaseHistory = async () => {
-    setPurchaseHistory([
-      { id: 1, datasetName: 'Health Data Set 1', date: '2023-05-01', price: '0.1 ETH' },
-      { id: 2, datasetName: 'Health Data Set 2', date: '2023-05-15', price: '0.2 ETH' },
-    ]);
-  };
-
-  const fetchResearchImpact = async () => {
-    setResearchImpact({
-      datasetsContributed: 2,
-      researchPapersImpacted: 5,
-      totalCitations: 23,
-    });
-  };
-
-  const purchaseDataset = async (datasetId) => {
-    console.log('Purchasing dataset:', datasetId);
-    // Implement purchase logic here
-  };
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
 
   return (
     <div className="dashboard-background">
       <div className="dashboard-container">
-        <Sidebar />
-
         <main className="main-content">
-          <section className="impact-section">
-            <h2>Research Impact</h2>
-            <StepProgressBar />
-          </section>
+          {!hasPurchased ? (
+            <section className="purchase-section">
+              <h2>Purchase Dataset</h2>
+              <button onClick={purchaseDataset}>Purchase</button>
+            </section>
+          ) : (
+            <section className="key-section">
+              <h2>Key Received</h2>
+              <p>You have received a key after purchasing the dataset.</p>
+              <button onClick={() => setShowKeyInput(true)}>I have a key</button>
+            </section>
+          )}
 
-          <section className="info-blocks">
-            <h3>Available Datasets</h3>
-            <div className="block-container">
-              {availableDatasets.map((dataset) => (
-                <div key={dataset.id} className="block-item">
-                  <span className="emoji">📊</span>
-                  <div>
-                    <h4>{dataset.name}</h4>
-                    <p>{dataset.price}</p>
-                    <p>{dataset.category}</p>
-                    <button onClick={() => purchaseDataset(dataset.id)}>Purchase</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          {showKeyInput && (
+            <section className="key-input-section">
+              <h3>Enter your key</h3>
+              <input
+                type="text"
+                placeholder="Enter your key"
+                value={inputKey}
+                onChange={handleKeyInput}
+              />
+              <button onClick={handleSubmitKey} disabled={loading}>
+                {loading ? 'Verifying...' : 'Submit'}
+              </button>
+            </section>
+          )}
 
-          <section className="info-blocks">
-            <h3>Purchase History</h3>
-            <div className="block-container">
-              {purchaseHistory.map((purchase) => (
-                <div key={purchase.id} className="block-item">
-                  <span className="emoji">🛒</span>
-                  <div>
-                    <h4>{purchase.datasetName}</h4>
-                    <p>Date: {purchase.date}</p>
-                    <p>Price: {purchase.price}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          {isKeyValid && (
+            <section className="download-section">
+              <h3>Key is valid!</h3>
+              <button onClick={downloadCSV}>Download CSV</button>
 
-          <section className="community-section">
-            <h2>Research Community</h2>
-            <div className="partner-list">
-              <div className="partner-card">
-                <Link to="/research-community">Join Research Community</Link>
-              </div>
-            </div>
-          </section>
+              <section className="trends-section">
+                <h3>Unlocked Trends</h3>
+                <p>Here are some mock health data trends:</p>
+                <ul>
+                  <li>Cardiac Health: 20% improvement over the last 5 years</li>
+                  <li>Sleep Disorders: 15% increase in diagnoses</li>
+                  <li>Sexual Health: 10% improvement in reported satisfaction rates</li>
+                </ul>
+              </section>
+            </section>
+          )}
         </main>
-
-        <aside className="analytics-sidebar">
-          <h2>Research Impact</h2>
-          <div className="progress-bar">
-            <div className="progress-circle completed"></div>
-            <div className="progress-circle completed"></div>
-            <div className="progress-circle"></div>
-            <div className="progress-circle"></div>
-          </div>
-          <div className="expenses">
-            <p>Datasets Contributed: {researchImpact.datasetsContributed}</p>
-            <p>Papers Impacted: {researchImpact.researchPapersImpacted}</p>
-            <p>Total Citations: {researchImpact.totalCitations}</p>
-          </div>
-
-          <div className="protected-paid">
-            <h3>Ethical. Impactful. Innovative.</h3>
-            <p>Your research contributes to advancing healthcare. Explore more datasets below.</p>
-            <Link to="/explore-datasets" className="upload-btn">Explore Datasets</Link>
-          </div>
-        </aside>
       </div>
     </div>
   );
